@@ -1,0 +1,12 @@
+https://threejs.org/ : Doc officiel donc meilleur endroit pour commencer et aller chercher des info pertinentes
+    -creating a scene
+    -Camera
+    -render
+    -geometry
+
+https://www.youtube.com/playlist?list=PLRtjMdoYXLf6mvjCmrltvsD0j12ZQDMfE (episodes 1-5) : 
+Il y a eu quelques updates de three.js depuis la parution de la playslist, mais une bonnes serie de videos bien expliquées
+    -creating a scene
+    -Camera
+    -render
+    -geometry

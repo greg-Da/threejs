@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Three.js</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="js/three.js"></script>
+    
+    <script>
+        // add FPS info box
+        (function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='//mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+
+        // represent the space where Js will be displayed 
+        var scene = new THREE.Scene();
+        
+        // Create a virtual camera for the user to view through it
+        // it require : field of view, aspect ratio, near clipping plane, far clipping plane
+        var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
+        // create the renderer
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+        document.body.appendChild( renderer.domElement );
+        
+        // update the scene if the size of the screen change
+        window.addEventListener('resize', function(){
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        })
+        
+        // create the box
+        var geometry = new THREE.BoxGeometry(1, 1, 1);
+        var cubeMaterial = 
+        [
+        new THREE.MeshPhongMaterial({ color: 0x72f9, wireframe: false}),
+        new THREE.MeshPhongMaterial({ color: 0xc600000, wireframe: false}),
+        new THREE.MeshPhongMaterial({ color: 0xc6b300, wireframe: false}),
+        new THREE.MeshPhongMaterial({ color: 0x2a7000, wireframe: false}),
+        new THREE.MeshPhongMaterial({ color: 0xbe45c9, wireframe: false}),
+        new THREE.MeshPhongMaterial({ color: 0x95d4e8, wireframe: false})
+        ]
+        
+        // render the box
+        var cube = new THREE.Mesh( geometry, cubeMaterial );
+        scene.add( cube );
+        
+        // move the camera on the z axis
+        camera.position.z = 10;
+        
+        // add light & shadow
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+                
+        var ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.8);
+        scene.add(ambientLight);
+        
+        var directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1.1);
+        scene.add(directionalLight);
+
+        directionalLight.castShadow = true;
+        cube.receiveShadow = true;
+        
+        var xSpeed = 0;
+        var ySpeed = 0;
+        
+        
+        // create the logic
+        var update = function(){
+            
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.03;
+            
+            // check input for movement
+            document.addEventListener("keydown", onDocumentKeyDown, false);
+            function onDocumentKeyDown(event) {
+                var keyCode = event.which;
+                if (keyCode == 38) {
+                    ySpeed += 0.00005;
+                } else if (keyCode == 40) {
+                    ySpeed -= 0.00005;
+                } else if (keyCode == 37) {
+                    xSpeed -= 0.00005;
+                } else if (keyCode == 39) {
+                    xSpeed += 0.00005;
+                } else if (keyCode == 32) {
+                    cube.position.set(0, 0, 0);
+                    xSpeed = 0;
+                    ySpeed = 0;
+                }
+                
+            };
+            
+            cube.position.x += xSpeed;
+            cube.position.y += ySpeed;
+            
+            
+            // create border
+            if(cube.position.y >= 6.7){
+                ySpeed *= -1;
+                cube.position.y = 6.7;
+            }else if ( cube.position.y <= -6.7){
+                ySpeed *= -1;
+                cube.position.y = -6.7;
+            }else if ( cube.position.x >= 13.5){
+                xSpeed *= -1;
+                cube.position.x = 13.5;
+            }else if ( cube.position.x <= -13.5){
+                xSpeed *= -1;
+                cube.position.x = -13.5;
+            }
+            
+        };
+        
+        // render the logic
+        var render = function () {
+            renderer.render( scene, camera);
+        };
+        
+        var loop = function () {
+            
+            // Allow us to run the frames
+            requestAnimationFrame(loop);
+            
+            update();
+            render();
+        };
+        
+        loop();
+    </script>
+</body>
+</html>
